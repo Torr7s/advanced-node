@@ -9,6 +9,8 @@ describe('FacebookAuthenticationUseCase', (): void => {
 	let loadFacebookUserApi: MockProxy<LoadFacebookUserApi>;
 	let sut: FacebookAuthenticationUseCase;
 
+	const token: string = 'fake_random_token';
+
 	beforeEach((): void => {
 		loadFacebookUserApi = mock();
 		sut = new FacebookAuthenticationUseCase(loadFacebookUserApi);
@@ -17,18 +19,14 @@ describe('FacebookAuthenticationUseCase', (): void => {
 	it('should call LoadFacebookUserApi with correct input', async (): Promise<void> => {
 		await sut.exec({ token: 'fake_random_token' });
 
-		expect(loadFacebookUserApi.exec).toHaveBeenCalledWith({
-			token: 'fake_random_token',
-		});
+		expect(loadFacebookUserApi.exec).toHaveBeenCalledWith({ token });
 		expect(loadFacebookUserApi.exec).toHaveBeenCalledTimes(1);
 	});
 
 	it('should return AuthenticationError when LoadFacebookUserApi returns undefined', async (): Promise<void> => {
 		loadFacebookUserApi.exec.mockResolvedValueOnce(undefined);
 
-		const authOutput: AuthenticationError = await sut.exec({
-			token: 'fake_random_token',
-		});
+		const authOutput: AuthenticationError = await sut.exec({ token });
 
 		expect(authOutput).toEqual(new AuthenticationError());
 	});
