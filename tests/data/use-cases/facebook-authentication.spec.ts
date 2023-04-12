@@ -1,19 +1,7 @@
+import { type LoadFacebookUserApi } from '@/data/contracts/apis';
+
 import { AuthenticationError } from '@/domain/errors/authentication';
 import { type FacebookAuthentication } from '@/domain/features';
-
-export namespace LoadFacebookUserApi {
-	export type Input = {
-		token: string;
-	};
-
-	export type Output = undefined;
-}
-
-interface LoadFacebookUserApi {
-	exec: (
-		input: LoadFacebookUserApi.Input,
-	) => Promise<LoadFacebookUserApi.Output>;
-}
 
 export class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 	public token?: string;
