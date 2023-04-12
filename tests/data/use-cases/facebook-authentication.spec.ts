@@ -1,43 +1,32 @@
 import { FacebookAuthenticationUseCase } from '@/data/use-cases/facebook';
-import { type LoadFacebookUserApi } from '@/data/contracts/apis';
 
 import { AuthenticationError } from '@/domain/errors/authentication';
 
-export class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
-	public token?: string;
-	public output = undefined;
-	public callsCount: number = 0;
-
-	public async exec(
-		input: LoadFacebookUserApi.Input,
-	): Promise<LoadFacebookUserApi.Output> {
-		this.token = input.token;
-		this.callsCount++;
-
-		return this.output;
-	}
-}
-
 describe('FacebookAuthenticationUseCase', (): void => {
 	it('should call LoadFacebookUserApi with correct input', async (): Promise<void> => {
-		const loadFacebookUserApi = new LoadFacebookUserApiSpy();
+		const loadFacebookUserApi = {
+			exec: jest.fn(),
+		};
 		const sut = new FacebookAuthenticationUseCase(loadFacebookUserApi);
 
-		await sut.exec({
+		await sut.exec({ token: 'fake_random_token' });
+
+		expect(loadFacebookUserApi.exec).toHaveBeenCalledWith({
 			token: 'fake_random_token',
 		});
-
-		expect(loadFacebookUserApi.token).toBe('fake_random_token');
-		expect(loadFacebookUserApi.callsCount).toBe(1);
+		expect(loadFacebookUserApi.exec).toHaveBeenCalledTimes(1);
 	});
 
 	it('should return AuthenticationError when LoadFacebookUserApi returns undefined', async (): Promise<void> => {
-		const loadFacebookUserApi = new LoadFacebookUserApiSpy();
-		loadFacebookUserApi.output = undefined;
+		const loadFacebookUserApi = {
+			exec: jest.fn(),
+		};
+
+		loadFacebookUserApi.exec.mockResolvedValueOnce(undefined);
 
 		const sut = new FacebookAuthenticationUseCase(loadFacebookUserApi);
 
-		const authOutput = await sut.exec({
+		const authOutput: AuthenticationError = await sut.exec({
 			token: 'fake_random_token',
 		});
 
