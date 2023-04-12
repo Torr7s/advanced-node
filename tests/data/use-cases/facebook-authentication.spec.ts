@@ -5,25 +5,16 @@ import { FacebookAuthenticationUseCase } from '@/data/use-cases/facebook';
 
 import { AuthenticationError } from '@/domain/errors/authentication';
 
-type SutTypes = {
-	sut: FacebookAuthenticationUseCase;
-	loadFacebookUserApi: MockProxy<LoadFacebookUserApi>;
-};
-
-const makeSut = (): SutTypes => {
-	const loadFacebookUserApi = mock<LoadFacebookUserApi>();
-	const sut = new FacebookAuthenticationUseCase(loadFacebookUserApi);
-
-	return {
-		loadFacebookUserApi,
-		sut,
-	};
-};
-
 describe('FacebookAuthenticationUseCase', (): void => {
-	it('should call LoadFacebookUserApi with correct input', async (): Promise<void> => {
-		const { loadFacebookUserApi, sut } = makeSut();
+	let loadFacebookUserApi: MockProxy<LoadFacebookUserApi>;
+	let sut: FacebookAuthenticationUseCase;
 
+	beforeEach((): void => {
+		loadFacebookUserApi = mock();
+		sut = new FacebookAuthenticationUseCase(loadFacebookUserApi);
+	});
+
+	it('should call LoadFacebookUserApi with correct input', async (): Promise<void> => {
 		await sut.exec({ token: 'fake_random_token' });
 
 		expect(loadFacebookUserApi.exec).toHaveBeenCalledWith({
@@ -33,8 +24,6 @@ describe('FacebookAuthenticationUseCase', (): void => {
 	});
 
 	it('should return AuthenticationError when LoadFacebookUserApi returns undefined', async (): Promise<void> => {
-		const { loadFacebookUserApi, sut } = makeSut();
-
 		loadFacebookUserApi.exec.mockResolvedValueOnce(undefined);
 
 		const authOutput: AuthenticationError = await sut.exec({
