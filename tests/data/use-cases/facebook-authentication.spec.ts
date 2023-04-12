@@ -6,11 +6,13 @@ import { AuthenticationError } from '@/domain/errors/authentication';
 export class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 	public token?: string;
 	public output = undefined;
+	public callsCount: number = 0;
 
 	public async exec(
 		input: LoadFacebookUserApi.Input,
 	): Promise<LoadFacebookUserApi.Output> {
 		this.token = input.token;
+		this.callsCount++;
 
 		return this.output;
 	}
@@ -26,6 +28,7 @@ describe('FacebookAuthenticationUseCase', (): void => {
 		});
 
 		expect(loadFacebookUserApi.token).toBe('fake_random_token');
+		expect(loadFacebookUserApi.callsCount).toBe(1);
 	});
 
 	it('should return AuthenticationError when LoadFacebookUserApi returns undefined', async (): Promise<void> => {
