@@ -1,7 +1,7 @@
+import { FacebookAuthenticationUseCase } from '@/data/use-cases/facebook';
 import { type LoadFacebookUserApi } from '@/data/contracts/apis';
 
 import { AuthenticationError } from '@/domain/errors/authentication';
-import { type FacebookAuthentication } from '@/domain/features';
 
 export class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 	public token?: string;
@@ -13,18 +13,6 @@ export class LoadFacebookUserApiSpy implements LoadFacebookUserApi {
 		this.token = input.token;
 
 		return this.output;
-	}
-}
-
-class FacebookAuthenticationUseCase {
-	constructor(private readonly loadFacebookUserApi: LoadFacebookUserApi) {}
-
-	public async exec(
-		input: FacebookAuthentication.Input,
-	): Promise<AuthenticationError> {
-		await this.loadFacebookUserApi.exec(input);
-
-		return new AuthenticationError();
 	}
 }
 
