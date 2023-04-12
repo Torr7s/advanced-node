@@ -5,7 +5,6 @@
     "module": "commonjs",
     "baseUrl": "src",
     "outDir": "dist",
-    "rootDir": "src",
     "resolveJsonModule": true,
     "allowJs": true,
     "removeComments": true,
@@ -19,7 +18,10 @@
       ],
       "@/tests/*": ["../tests/*"],
     },
-    "rootDirs": [],
+    "rootDirs": [
+      "src",
+      "tests"
+    ],
     "emitDecoratorMetadata": true,
     "noFallthroughCasesInSwitch": false,
     "strict": true,
