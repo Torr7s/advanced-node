@@ -1,0 +1,31 @@
+{
+  "extends": "standard-with-typescript",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "getter-return": "error",
+    "no-async-promise-executor": "error",
+    "no-await-in-loop": "warn",
+    "no-dupe-args": "error",
+    "no-dupe-class-members": "error",
+    "no-duplicate-imports": "warn",
+    "no-extra-semi": "warn",
+    "space-before-function-paren": [
+      "warn",
+      {
+        "anonymous": "never",
+        "named": "always",
+        "asyncArrow": "always"
+      }
+    ],
+    "accessor-pairs": [
+      "error",
+      {
+        "getWithoutSet": true
+      }
+    ],
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/no-namespace": "off"
+  }
+}
