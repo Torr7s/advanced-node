@@ -11,6 +11,8 @@
     "no-dupe-class-members": "error",
     "no-duplicate-imports": "warn",
     "no-extra-semi": "warn",
+    "no-mixed-spaces-and-tabs": "off",
+    "no-tabs": "off",
     "space-before-function-paren": [
       "warn",
       {
