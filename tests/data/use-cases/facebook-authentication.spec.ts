@@ -4,6 +4,7 @@ import { type LoadFacebookUserApi } from '@/data/contracts/apis';
 import {
 	type CreateFacebookAccountRepository,
 	type LoadUserAccountRepository,
+	type UpdateFacebookAccountRepository,
 } from '@/data/contracts/repositories';
 import { FacebookAuthenticationUseCase } from '@/data/use-cases/facebook';
 
@@ -11,7 +12,9 @@ import { AuthenticationError } from '@/domain/errors/authentication';
 
 describe('FacebookAuthenticationUseCase', (): void => {
 	let userAccountRepository: MockProxy<
-		LoadUserAccountRepository & CreateFacebookAccountRepository
+		LoadUserAccountRepository &
+			CreateFacebookAccountRepository &
+			UpdateFacebookAccountRepository
 	>;
 	let facebookApi: MockProxy<LoadFacebookUserApi>;
 
@@ -67,5 +70,21 @@ describe('FacebookAuthenticationUseCase', (): void => {
 			email: 'random_facebook_email',
 		});
 		expect(userAccountRepository.createFromFacebook).toHaveBeenCalledTimes(1);
+	});
+
+	it('should call UpdateFacebookAccountRepository when LoadUserAccountRepository returns data', async (): Promise<void> => {
+		userAccountRepository.findOne.mockResolvedValueOnce({
+			id: 'random_id',
+			name: 'random_name',
+		});
+
+		await sut.exec({ token });
+
+		expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledWith({
+			id: 'random_id',
+			facebookId: 'random_facebook_id',
+			name: 'random_name',
+		});
+		expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledTimes(1);
 	});
 });
