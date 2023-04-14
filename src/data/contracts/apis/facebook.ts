@@ -13,7 +13,7 @@ export namespace LoadFacebookUserApi {
 }
 
 export interface LoadFacebookUserApi {
-	exec: (
+	loadUser: (
 		input: LoadFacebookUserApi.Input,
 	) => Promise<LoadFacebookUserApi.Output>;
 }
