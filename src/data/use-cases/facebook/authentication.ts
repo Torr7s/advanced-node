@@ -19,17 +19,20 @@ export class FacebookAuthenticationUseCase {
 	public async exec(
 		input: FacebookAuthentication.Input,
 	): Promise<AuthenticationError> {
-		const fbData = await this.facebookApi.loadUser(input);
+		const fbData: LoadFacebookUserApi.Output = await this.facebookApi.loadUser(
+			input,
+		);
 
 		if (fbData != null) {
-			const accountData = await this.userAccountRepository.findOne({
-				email: fbData.email,
-			});
+			const accountData: LoadUserAccountRepository.Output =
+				await this.userAccountRepository.findOne({
+					email: fbData.email,
+				});
 
-			if (accountData?.name != null) {
+			if (accountData != null) {
 				await this.userAccountRepository.updateWithFacebook({
 					id: accountData.id,
-					name: accountData.name,
+					name: accountData.name ?? fbData.name,
 					facebookId: fbData.facebookId,
 				});
 			} else {

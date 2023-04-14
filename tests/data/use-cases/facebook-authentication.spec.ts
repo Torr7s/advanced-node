@@ -27,12 +27,14 @@ describe('FacebookAuthenticationUseCase', (): void => {
 		userAccountRepository = mock();
 
 		facebookApi.loadUser.mockResolvedValue({
-			facebookId: 'random_facebook_id',
-			name: 'random_facebook_username',
-			email: 'random_facebook_email',
+			facebookId: 'any_facebook_id',
+			name: 'any_facebook_name',
+			email: 'any_facebook_email',
 		});
 
 		sut = new FacebookAuthenticationUseCase(facebookApi, userAccountRepository);
+
+		userAccountRepository.findOne.mockResolvedValue(undefined);
 	});
 
 	it('should call LoadFacebookUserApi with correct input', async (): Promise<void> => {
@@ -54,36 +56,49 @@ describe('FacebookAuthenticationUseCase', (): void => {
 		await sut.exec({ token });
 
 		expect(userAccountRepository.findOne).toHaveBeenCalledWith({
-			email: 'random_facebook_email',
+			email: 'any_facebook_email',
 		});
 		expect(userAccountRepository.findOne).toHaveBeenCalledTimes(1);
 	});
 
 	it('should call CreateFacebookAccountRepository when LoadUserAccountRepository returns undefined', async (): Promise<void> => {
-		userAccountRepository.findOne.mockResolvedValueOnce(undefined);
-
 		await sut.exec({ token });
 
 		expect(userAccountRepository.createFromFacebook).toHaveBeenCalledWith({
-			facebookId: 'random_facebook_id',
-			name: 'random_facebook_username',
-			email: 'random_facebook_email',
+			facebookId: 'any_facebook_id',
+			name: 'any_facebook_name',
+			email: 'any_facebook_email',
 		});
 		expect(userAccountRepository.createFromFacebook).toHaveBeenCalledTimes(1);
 	});
 
 	it('should call UpdateFacebookAccountRepository when LoadUserAccountRepository returns data', async (): Promise<void> => {
 		userAccountRepository.findOne.mockResolvedValueOnce({
-			id: 'random_id',
-			name: 'random_name',
+			id: 'any_id',
+			name: 'any_name',
 		});
 
 		await sut.exec({ token });
 
 		expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledWith({
-			id: 'random_id',
-			facebookId: 'random_facebook_id',
-			name: 'random_name',
+			id: 'any_id',
+			facebookId: 'any_facebook_id',
+			name: 'any_name',
+		});
+		expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledTimes(1);
+	});
+
+	it('should update account name', async (): Promise<void> => {
+		userAccountRepository.findOne.mockResolvedValueOnce({
+			id: 'any_id',
+		});
+
+		await sut.exec({ token });
+
+		expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledWith({
+			id: 'any_id',
+			facebookId: 'any_facebook_id',
+			name: 'any_facebook_name',
 		});
 		expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledTimes(1);
 	});
