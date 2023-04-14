@@ -8,4 +8,8 @@ describe('AccessToken Model', (): void => {
 			value: 'any_token_value',
 		});
 	});
+
+	it('should expire in 1_800_000 ms', (): void => {
+		expect(AccessToken.expirationInMs).toBe(1_800_000);
+	});
 });
