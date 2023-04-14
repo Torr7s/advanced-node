@@ -3,7 +3,13 @@ export namespace LoadFacebookUserApi {
 		token: string;
 	};
 
-	export type Output = undefined;
+	export type Output =
+		| undefined
+		| {
+				facebookId: string;
+				name: string;
+				email: string;
+		  };
 }
 
 export interface LoadFacebookUserApi {
