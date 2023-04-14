@@ -1,7 +1,10 @@
 import { mock, type MockProxy } from 'jest-mock-extended';
 
 import { type LoadFacebookUserApi } from '@/data/contracts/apis';
-import { type LoadUserAccountRepository } from '@/data/contracts/repositories';
+import {
+	type CreateFacebookAccountRepository,
+	type LoadUserAccountRepository,
+} from '@/data/contracts/repositories';
 import { FacebookAuthenticationUseCase } from '@/data/use-cases/facebook';
 
 import { AuthenticationError } from '@/domain/errors/authentication';
@@ -9,6 +12,7 @@ import { AuthenticationError } from '@/domain/errors/authentication';
 describe('FacebookAuthenticationUseCase', (): void => {
 	let loadFacebookUserApi: MockProxy<LoadFacebookUserApi>;
 	let loadUserAccountRepository: MockProxy<LoadUserAccountRepository>;
+	let createFacebookAccountRepository: MockProxy<CreateFacebookAccountRepository>;
 
 	let sut: FacebookAuthenticationUseCase;
 
@@ -17,6 +21,7 @@ describe('FacebookAuthenticationUseCase', (): void => {
 	beforeEach((): void => {
 		loadFacebookUserApi = mock();
 		loadUserAccountRepository = mock();
+		createFacebookAccountRepository = mock();
 
 		loadFacebookUserApi.exec.mockResolvedValue({
 			facebookId: 'random_facebook_id',
@@ -27,6 +32,7 @@ describe('FacebookAuthenticationUseCase', (): void => {
 		sut = new FacebookAuthenticationUseCase(
 			loadFacebookUserApi,
 			loadUserAccountRepository,
+			createFacebookAccountRepository,
 		);
 	});
 
@@ -52,5 +58,22 @@ describe('FacebookAuthenticationUseCase', (): void => {
 			email: 'random_facebook_email',
 		});
 		expect(loadUserAccountRepository.findOne).toHaveBeenCalledTimes(1);
+	});
+
+	it('should call CreateFacebookAccountRepository when LoadUserAccountRepository returns undefined', async (): Promise<void> => {
+		loadUserAccountRepository.findOne.mockResolvedValueOnce(undefined);
+
+		await sut.exec({ token });
+
+		expect(
+			createFacebookAccountRepository.createFromFacebook,
+		).toHaveBeenCalledWith({
+			facebookId: 'random_facebook_id',
+			name: 'random_facebook_username',
+			email: 'random_facebook_email',
+		});
+		expect(
+			createFacebookAccountRepository.createFromFacebook,
+		).toHaveBeenCalledTimes(1);
 	});
 });
