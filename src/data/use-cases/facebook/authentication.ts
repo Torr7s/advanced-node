@@ -1,8 +1,7 @@
 import { type LoadFacebookUserApi } from '@/data/contracts/apis';
 import {
-	type CreateFacebookAccountRepository,
 	type LoadUserAccountRepository,
-	type UpdateFacebookAccountRepository,
+	type SaveFacebookAccountRepository,
 } from '@/data/contracts/repositories';
 
 import { AuthenticationError } from '@/domain/errors/authentication';
@@ -12,8 +11,7 @@ export class FacebookAuthenticationUseCase {
 	constructor(
 		private readonly facebookApi: LoadFacebookUserApi,
 		private readonly userAccountRepository: LoadUserAccountRepository &
-			CreateFacebookAccountRepository &
-			UpdateFacebookAccountRepository,
+			SaveFacebookAccountRepository,
 	) {}
 
 	public async exec(
@@ -29,15 +27,12 @@ export class FacebookAuthenticationUseCase {
 					email: fbData.email,
 				});
 
-			if (accountData != null) {
-				await this.userAccountRepository.updateWithFacebook({
-					id: accountData.id,
-					name: accountData.name ?? fbData.name,
-					facebookId: fbData.facebookId,
-				});
-			} else {
-				await this.userAccountRepository.createFromFacebook(fbData);
-			}
+			await this.userAccountRepository.saveWithFacebook({
+				id: accountData?.id,
+				name: accountData?.name ?? fbData.name,
+				email: fbData.email,
+				facebookId: fbData.facebookId,
+			});
 		}
 
 		return new AuthenticationError();
