@@ -4,9 +4,9 @@ import {
 	type SaveFacebookAccountRepository,
 } from '@/data/contracts/repositories';
 
+import { AuthenticationError } from '@/domain/errors';
 import { type FacebookAuthentication } from '@/domain/features';
 import { FacebookAccount } from '@/domain/models';
-import { AuthenticationError } from '@/domain/errors/authentication';
 
 export class FacebookAuthenticationUseCase {
 	constructor(
