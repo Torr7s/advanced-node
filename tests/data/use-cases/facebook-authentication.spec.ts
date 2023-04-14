@@ -7,7 +7,10 @@ import {
 } from '@/data/contracts/repositories';
 import { FacebookAuthenticationUseCase } from '@/data/use-cases/facebook';
 
-import { AuthenticationError } from '@/domain/errors/authentication';
+import { AuthenticationError } from '@/domain/errors';
+import { FacebookAccount } from '@/domain/models';
+
+jest.mock('@/domain/models/facebook-account');
 
 describe('FacebookAuthenticationUseCase', (): void => {
 	let userAccountRepository: MockProxy<
@@ -58,46 +61,19 @@ describe('FacebookAuthenticationUseCase', (): void => {
 		expect(userAccountRepository.findOne).toHaveBeenCalledTimes(1);
 	});
 
-	it('should create account with facebook data', async (): Promise<void> => {
-		await sut.exec({ token });
+	it('should call SaveFacebookAccountRepository with FacebookAccount', async (): Promise<void> => {
+		const FacebookAccountStub: jest.Mock = jest
+			.fn()
+			.mockImplementation((): object => ({
+				any: 'any',
+			}));
 
-		expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({
-			facebookId: 'any_facebook_id',
-			name: 'any_facebook_name',
-			email: 'any_facebook_email',
-		});
-		expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledTimes(1);
-	});
-
-	it('should not update account name', async (): Promise<void> => {
-		userAccountRepository.findOne.mockResolvedValueOnce({
-			id: 'any_id',
-			name: 'any_name',
-		});
+		jest.mocked(FacebookAccount).mockImplementation(FacebookAccountStub);
 
 		await sut.exec({ token });
 
 		expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({
-			id: 'any_id',
-			facebookId: 'any_facebook_id',
-			name: 'any_name',
-			email: 'any_facebook_email',
-		});
-		expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledTimes(1);
-	});
-
-	it('should update account name', async (): Promise<void> => {
-		userAccountRepository.findOne.mockResolvedValueOnce({
-			id: 'any_id',
-		});
-
-		await sut.exec({ token });
-
-		expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({
-			id: 'any_id',
-			facebookId: 'any_facebook_id',
-			name: 'any_facebook_name',
-			email: 'any_facebook_email',
+			any: 'any',
 		});
 		expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledTimes(1);
 	});
