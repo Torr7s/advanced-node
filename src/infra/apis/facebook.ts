@@ -22,11 +22,22 @@ export class FacebookAPI {
 			},
 		});
 
-		await this.httpClient.get({
-			url: `${FacebookAPI.baseURL}/oauth/debug_token`,
+		const debugToken = await this.httpClient.get({
+			url: `${FacebookAPI.baseURL}/debug_token`,
 			params: {
 				access_token: appToken.access_token,
 				input_token: input.token,
+			},
+		});
+
+		const fields: string[] = ['id', 'name', 'email'];
+
+		await this.httpClient.get({
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+			url: `${FacebookAPI.baseURL}/${debugToken.data.user_id}`,
+			params: {
+				fields: fields.join(','),
+				access_token: input.token,
 			},
 		});
 	}
