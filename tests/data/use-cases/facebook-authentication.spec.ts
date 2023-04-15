@@ -14,6 +14,8 @@ import { AccessToken, FacebookAccount } from '@/domain/models';
 jest.mock('@/domain/models/facebook-account');
 
 describe('FacebookAuthenticationUseCase', (): void => {
+	let token: string;
+
 	let userAccountRepository: MockProxy<
 		LoadUserAccountRepository & SaveFacebookAccountRepository
 	>;
@@ -22,9 +24,9 @@ describe('FacebookAuthenticationUseCase', (): void => {
 
 	let sut: FacebookAuthenticationUseCase;
 
-	const token: string = 'fake_random_token';
+	beforeAll((): void => {
+		token = 'fake_random_token';
 
-	beforeEach((): void => {
 		facebookApi = mock();
 		userAccountRepository = mock();
 		crypto = mock();
@@ -35,18 +37,20 @@ describe('FacebookAuthenticationUseCase', (): void => {
 			email: 'any_facebook_email',
 		});
 
-		sut = new FacebookAuthenticationUseCase(
-			facebookApi,
-			userAccountRepository,
-			crypto,
-		);
-
 		userAccountRepository.findOne.mockResolvedValue(undefined);
 		userAccountRepository.saveWithFacebook.mockResolvedValue({
 			id: 'any_account_id',
 		});
 
 		crypto.generateToken.mockResolvedValue('any_generated_token');
+	});
+
+	beforeEach((): void => {
+		sut = new FacebookAuthenticationUseCase(
+			facebookApi,
+			userAccountRepository,
+			crypto,
+		);
 	});
 
 	it('should call LoadFacebookUserApi with correct input', async (): Promise<void> => {
