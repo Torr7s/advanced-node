@@ -9,7 +9,7 @@ import { AuthenticationError } from '@/domain/errors';
 import { type FacebookAuthentication } from '@/domain/features';
 import { AccessToken, FacebookAccount } from '@/domain/models';
 
-export class FacebookAuthenticationUseCase {
+export class FacebookAuthenticationUseCase implements FacebookAuthentication {
 	constructor(
 		private readonly facebookApi: LoadFacebookUserApi,
 		private readonly userAccountRepository: LoadUserAccountRepository &
@@ -19,7 +19,7 @@ export class FacebookAuthenticationUseCase {
 
 	public async exec(
 		input: FacebookAuthentication.Input,
-	): Promise<AuthenticationError> {
+	): Promise<FacebookAuthentication.Output> {
 		const facebookData: LoadFacebookUserApi.Output =
 			await this.facebookApi.loadUser(input);
 
@@ -35,10 +35,12 @@ export class FacebookAuthenticationUseCase {
 				facebookAccount,
 			);
 
-			await this.crypto.generateToken({
+			const token: string = await this.crypto.generateToken({
 				key: id,
 				expirationInMs: AccessToken.expirationInMs,
 			});
+
+			return new AccessToken(token);
 		}
 
 		return new AuthenticationError();

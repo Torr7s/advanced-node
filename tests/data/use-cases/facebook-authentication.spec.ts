@@ -42,9 +42,11 @@ describe('FacebookAuthenticationUseCase', (): void => {
 		);
 
 		userAccountRepository.findOne.mockResolvedValue(undefined);
-		userAccountRepository.saveWithFacebook.mockResolvedValueOnce({
+		userAccountRepository.saveWithFacebook.mockResolvedValue({
 			id: 'any_account_id',
 		});
+
+		crypto.generateToken.mockResolvedValue('any_generated_token');
 	});
 
 	it('should call LoadFacebookUserApi with correct input', async (): Promise<void> => {
@@ -57,7 +59,7 @@ describe('FacebookAuthenticationUseCase', (): void => {
 	it('should return AuthenticationError when LoadFacebookUserApi returns undefined', async (): Promise<void> => {
 		facebookApi.loadUser.mockResolvedValueOnce(undefined);
 
-		const authOutput: AuthenticationError = await sut.exec({ token });
+		const authOutput = await sut.exec({ token });
 
 		expect(authOutput).toEqual(new AuthenticationError());
 	});
@@ -96,5 +98,11 @@ describe('FacebookAuthenticationUseCase', (): void => {
 			expirationInMs: AccessToken.expirationInMs,
 		});
 		expect(crypto.generateToken).toHaveBeenCalledTimes(1);
+	});
+
+	it('should return an AccessToken on success', async (): Promise<void> => {
+		const authResult = await sut.exec({ token });
+
+		expect(authResult).toEqual(new AccessToken('any_generated_token'));
 	});
 });
