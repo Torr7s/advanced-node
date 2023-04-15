@@ -13,12 +13,20 @@ export class FacebookAPI {
 	) {}
 
 	public async findOne(input: LoadFacebookUserApi.Input): Promise<void> {
-		await this.httpClient.get({
+		const appToken = await this.httpClient.get({
 			url: `${FacebookAPI.baseURL}/oauth/access_token`,
 			params: {
 				client_id: this.clientId,
 				client_secret: this.clientSecret,
 				grant_type: FacebookAPI.grantType,
+			},
+		});
+
+		await this.httpClient.get({
+			url: `${FacebookAPI.baseURL}/oauth/debug_token`,
+			params: {
+				access_token: appToken.access_token,
+				input_token: input.token,
 			},
 		});
 	}
