@@ -105,4 +105,46 @@ describe('FacebookAuthenticationUseCase', (): void => {
 
 		expect(authResult).toEqual(new AccessToken('any_generated_token'));
 	});
+
+	it('should rethrow if LoadFacebookUserApi throws', async (): Promise<void> => {
+		facebookApi.loadUser.mockRejectedValueOnce(
+			new Error('facebook_user_api_error'),
+		);
+
+		const promise = sut.exec({ token });
+
+		await expect(promise).rejects.toThrow(new Error('facebook_user_api_error'));
+	});
+
+	it('should rethrow if LoadUserAccountRepository throws', async (): Promise<void> => {
+		userAccountRepository.findOne.mockRejectedValueOnce(
+			new Error('load_user_account_error'),
+		);
+
+		const promise = sut.exec({ token });
+
+		await expect(promise).rejects.toThrow(new Error('load_user_account_error'));
+	});
+
+	it('should rethrow if SaveFacebookAccountRepository throws', async (): Promise<void> => {
+		userAccountRepository.findOne.mockRejectedValueOnce(
+			new Error('save_facebook_account_error'),
+		);
+
+		const promise = sut.exec({ token });
+
+		await expect(promise).rejects.toThrow(
+			new Error('save_facebook_account_error'),
+		);
+	});
+
+	it('should rethrow if TokenGenerator throws', async (): Promise<void> => {
+		userAccountRepository.findOne.mockRejectedValueOnce(
+			new Error('token_generator_error'),
+		);
+
+		const promise = sut.exec({ token });
+
+		await expect(promise).rejects.toThrow(new Error('token_generator_error'));
+	});
 });
