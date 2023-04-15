@@ -50,9 +50,23 @@ describe('AxiosHttpClient', (): void => {
 		});
 
 		it('should return on success', async (): Promise<void> => {
-			const result = await sut.get({ url, params });
+			const result = await sut.get({
+				url,
+				params,
+			});
 
 			expect(result).toEqual('any_data');
+		});
+
+		it('should rethrow if axios.get throws', async (): Promise<void> => {
+			mockedAxios.get.mockRejectedValueOnce(new Error('axios_http_error'));
+
+			const promise = sut.get({
+				url,
+				params,
+			});
+
+			await expect(promise).rejects.toThrow(new Error('axios_http_error'));
 		});
 	});
 
