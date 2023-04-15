@@ -1,5 +1,5 @@
 export interface HttpGetClient {
-	get: (input: HttpGetClient.Input) => Promise<HttpGetClient.Output>;
+	get: <T = any>(input: HttpGetClient.Input) => Promise<T>;
 }
 
 export namespace HttpGetClient {
@@ -7,6 +7,4 @@ export namespace HttpGetClient {
 		url: string;
 		params: object;
 	};
-
-	export type Output = any;
 }

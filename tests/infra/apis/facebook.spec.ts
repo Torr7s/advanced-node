@@ -19,18 +19,24 @@ describe('Facebook API', (): void => {
 
 	beforeEach((): void => {
 		httpClient.get
+			// stacking of requests
 			.mockResolvedValueOnce({ access_token: 'any_app_token' })
 			.mockResolvedValueOnce({
 				data: {
 					user_id: 'any_user_id',
 				},
+			})
+			.mockResolvedValueOnce({
+				id: 'any_facebook_id',
+				name: 'any_facebook_name',
+				email: 'any_facebook_email',
 			});
 
 		sut = new FacebookAPI(httpClient, clientId, clientSecret);
 	});
 
 	it('should get app token', async (): Promise<void> => {
-		await sut.findOne({ token: 'any_client_token' });
+		await sut.loadUser({ token: 'any_client_token' });
 
 		expect(httpClient.get).toHaveBeenCalledWith({
 			url: 'https://graph.facebook.com/oauth/access_token',
@@ -43,7 +49,7 @@ describe('Facebook API', (): void => {
 	});
 
 	it('should get debug token', async (): Promise<void> => {
-		await sut.findOne({ token: 'any_client_token' });
+		await sut.loadUser({ token: 'any_client_token' });
 
 		expect(httpClient.get).toHaveBeenCalledWith({
 			url: 'https://graph.facebook.com/debug_token',
@@ -55,7 +61,7 @@ describe('Facebook API', (): void => {
 	});
 
 	it('should get user info', async (): Promise<void> => {
-		await sut.findOne({ token: 'any_client_token' });
+		await sut.loadUser({ token: 'any_client_token' });
 
 		expect(httpClient.get).toHaveBeenCalledWith({
 			url: 'https://graph.facebook.com/any_user_id',
@@ -63,6 +69,16 @@ describe('Facebook API', (): void => {
 				fields: 'id,name,email',
 				access_token: 'any_client_token',
 			},
+		});
+	});
+
+	it('should return facebook user', async (): Promise<void> => {
+		const facebookUser = await sut.loadUser({ token: 'any_client_token' });
+
+		expect(facebookUser).toEqual({
+			facebookId: 'any_facebook_id',
+			name: 'any_facebook_name',
+			email: 'any_facebook_email',
 		});
 	});
 });
