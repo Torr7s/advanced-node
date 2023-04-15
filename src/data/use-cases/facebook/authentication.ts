@@ -7,7 +7,7 @@ import {
 
 import { AuthenticationError } from '@/domain/errors';
 import { type FacebookAuthentication } from '@/domain/features';
-import { FacebookAccount } from '@/domain/models';
+import { AccessToken, FacebookAccount } from '@/domain/models';
 
 export class FacebookAuthenticationUseCase {
 	constructor(
@@ -37,6 +37,7 @@ export class FacebookAuthenticationUseCase {
 
 			await this.crypto.generateToken({
 				key: id,
+				expirationInMs: AccessToken.expirationInMs,
 			});
 		}
 
