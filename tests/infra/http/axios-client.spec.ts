@@ -39,7 +39,7 @@ describe('AxiosHttpClient', (): void => {
 			expect(mockedAxios.get).toHaveBeenCalledTimes(1);
 		});
 
-		it('should return on success', async (): Promise<void> => {
+		it('should return data on success', async (): Promise<void> => {
 			const result = await sut.get({
 				url,
 				params,
