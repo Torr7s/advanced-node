@@ -7,10 +7,12 @@ jest.mock('jsonwebtoken');
 export class JwtTokenGenerator {
 	constructor(private readonly secretKey: string) {}
 
-	public async generateToken(input: TokenGenerator.Input): Promise<void> {
+	public async generateToken(
+		input: TokenGenerator.Input,
+	): Promise<TokenGenerator.Output> {
 		const expirationInSeconds = input.expirationInMs / 1_000;
 
-		jwt.sign(
+		return jwt.sign(
 			{
 				key: input.key,
 			},
@@ -28,6 +30,7 @@ describe('JwtTokenGenerator', (): void => {
 
 	beforeAll((): void => {
 		mockedJwt = jwt as jest.Mocked<typeof jwt>;
+		mockedJwt.sign.mockImplementation(() => 'any_token');
 	});
 
 	beforeEach((): void => {
@@ -47,5 +50,14 @@ describe('JwtTokenGenerator', (): void => {
 				expiresIn: 1_000,
 			},
 		);
+	});
+
+	it('should return a token on success', async (): Promise<void> => {
+		const token = await sut.generateToken({
+			key: 'any_key',
+			expirationInMs: 1_000_000,
+		});
+
+		expect(token).toBe('any_token');
 	});
 });
