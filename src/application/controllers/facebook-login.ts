@@ -10,12 +10,22 @@ import { RequiredFieldError } from '@/application/errors';
 import { type FacebookAuthentication } from '@/domain/features';
 import { AccessToken } from '@/domain/models';
 
+type HttpRequest = {
+	token?: string | null;
+};
+
+type Model =
+	| Error
+	| {
+			accessToken: string;
+	  };
+
 export class FacebookLoginController {
 	constructor(
 		private readonly facebookAuthentication: FacebookAuthentication,
 	) {}
 
-	public async handle(httpRequest: any): Promise<HttpResponse> {
+	public async handle(httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
 		try {
 			if (!httpRequest.token) {
 				return badRequest(new RequiredFieldError('token'));
