@@ -1,5 +1,5 @@
 export interface LoadUserAccountRepository {
-	findOne: (
+	load: (
 		input: LoadUserAccountRepository.Input,
 	) => Promise<LoadUserAccountRepository.Output>;
 }

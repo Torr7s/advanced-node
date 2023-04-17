@@ -25,7 +25,7 @@ export class FacebookAuthenticationUseCase implements FacebookAuthentication {
 
 		if (facebookData != null) {
 			const accountData: LoadUserAccountRepository.Output =
-				await this.userAccountRepository.findOne({
+				await this.userAccountRepository.load({
 					email: facebookData.email,
 				});
 

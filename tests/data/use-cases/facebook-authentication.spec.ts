@@ -37,7 +37,7 @@ describe('FacebookAuthenticationUseCase', (): void => {
 			email: 'any_facebook_email',
 		});
 
-		userAccountRepository.findOne.mockResolvedValue(undefined);
+		userAccountRepository.load.mockResolvedValue(undefined);
 		userAccountRepository.saveWithFacebook.mockResolvedValue({
 			id: 'any_account_id',
 		});
@@ -71,10 +71,10 @@ describe('FacebookAuthenticationUseCase', (): void => {
 	it('should call LoadUserAccountRepository when LoadFacebookUserApi returns data', async (): Promise<void> => {
 		await sut.exec({ token });
 
-		expect(userAccountRepository.findOne).toHaveBeenCalledWith({
+		expect(userAccountRepository.load).toHaveBeenCalledWith({
 			email: 'any_facebook_email',
 		});
-		expect(userAccountRepository.findOne).toHaveBeenCalledTimes(1);
+		expect(userAccountRepository.load).toHaveBeenCalledTimes(1);
 	});
 
 	it('should call SaveFacebookAccountRepository with FacebookAccount', async (): Promise<void> => {
@@ -121,7 +121,7 @@ describe('FacebookAuthenticationUseCase', (): void => {
 	});
 
 	it('should rethrow if LoadUserAccountRepository throws', async (): Promise<void> => {
-		userAccountRepository.findOne.mockRejectedValueOnce(
+		userAccountRepository.load.mockRejectedValueOnce(
 			new Error('load_user_account_error'),
 		);
 
@@ -131,7 +131,7 @@ describe('FacebookAuthenticationUseCase', (): void => {
 	});
 
 	it('should rethrow if SaveFacebookAccountRepository throws', async (): Promise<void> => {
-		userAccountRepository.findOne.mockRejectedValueOnce(
+		userAccountRepository.load.mockRejectedValueOnce(
 			new Error('save_facebook_account_error'),
 		);
 
@@ -143,7 +143,7 @@ describe('FacebookAuthenticationUseCase', (): void => {
 	});
 
 	it('should rethrow if TokenGenerator throws', async (): Promise<void> => {
-		userAccountRepository.findOne.mockRejectedValueOnce(
+		userAccountRepository.load.mockRejectedValueOnce(
 			new Error('token_generator_error'),
 		);
 
