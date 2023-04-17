@@ -23,10 +23,18 @@ export class JwtTokenGenerator {
 }
 
 describe('JwtTokenGenerator', (): void => {
-	it('should call jwt.sign with correct params', async (): Promise<void> => {
-		const mockedJwt = jwt as jest.Mocked<typeof jwt>;
-		const sut = new JwtTokenGenerator('any_secret_key');
+	let sut: JwtTokenGenerator;
+	let mockedJwt: jest.Mocked<typeof jwt>;
 
+	beforeAll((): void => {
+		mockedJwt = jwt as jest.Mocked<typeof jwt>;
+	});
+
+	beforeEach((): void => {
+		sut = new JwtTokenGenerator('any_secret_key');
+	});
+
+	it('should call jwt.sign with correct params', async (): Promise<void> => {
 		await sut.generateToken({
 			key: 'any_key',
 			expirationInMs: 1_000_000,
