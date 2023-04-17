@@ -13,7 +13,9 @@ type LoadOutput = LoadUserAccountRepository.Output;
 type SaveInput = SaveFacebookAccountRepository.Input;
 type SaveOutput = SaveFacebookAccountRepository.Output;
 
-export class PgUserAccountRepository implements LoadUserAccountRepository {
+export class PgUserAccountRepository
+	implements LoadUserAccountRepository, SaveFacebookAccountRepository
+{
 	private readonly repository: Repository<PgUser> = getRepository(PgUser);
 
 	public async load(input: LoadInput): Promise<LoadOutput> {
