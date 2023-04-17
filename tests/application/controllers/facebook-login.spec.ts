@@ -1,7 +1,7 @@
 import { type MockProxy, mock } from 'jest-mock-extended';
 
 import { FacebookLoginController } from '@/application/controllers';
-import { ServerHttpError } from '@/application/errors';
+import { RequiredFieldError, ServerHttpError } from '@/application/errors';
 
 import { AuthenticationError } from '@/domain/errors';
 import { type FacebookAuthentication } from '@/domain/features';
@@ -26,7 +26,7 @@ describe('FacebookLoginController', (): void => {
 
 		expect(httpResponse).toEqual({
 			statusCode: 400,
-			data: new Error('The field token is required'),
+			data: new RequiredFieldError('token'),
 		});
 	});
 
@@ -35,7 +35,7 @@ describe('FacebookLoginController', (): void => {
 
 		expect(httpResponse).toEqual({
 			statusCode: 400,
-			data: new Error('The field token is required'),
+			data: new RequiredFieldError('token'),
 		});
 	});
 
@@ -44,7 +44,7 @@ describe('FacebookLoginController', (): void => {
 
 		expect(httpResponse).toEqual({
 			statusCode: 400,
-			data: new Error('The field token is required'),
+			data: new RequiredFieldError('token'),
 		});
 	});
 
