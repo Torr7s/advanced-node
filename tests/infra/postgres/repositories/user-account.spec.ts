@@ -1,56 +1,21 @@
 import { type IBackup, type IMemoryDb, newDb } from 'pg-mem';
-import {
-	Column,
-	Entity,
-	PrimaryGeneratedColumn,
-	type Repository,
-	getConnection,
-	getRepository,
-} from 'typeorm';
+import { type Repository, getConnection, getRepository } from 'typeorm';
 
-import { type LoadUserAccountRepository } from '@/data/contracts/repositories';
+import { PgUser } from '@/infra/postgres/entities';
+import { PgUserAccountRepository } from '@/infra/postgres/repositories';
 
-@Entity({ name: 'usuarios' })
-export class PgUser {
-	@PrimaryGeneratedColumn()
-	id!: number;
+const createFakeDatabase = async (entities?: any[]): Promise<IMemoryDb> => {
+	const db: IMemoryDb = newDb();
 
-	@Column({
-		name: 'nome',
-		nullable: true,
-	})
-	name?: string;
+	const connection: any = await db.adapters.createTypeormConnection({
+		type: 'postgres',
+		entities: entities ?? ['src/infra/postgres/entities/index.ts'],
+	});
 
-	@Column()
-	email!: string;
+	await connection.synchronize();
 
-	@Column({
-		name: 'id_facebook',
-		nullable: true,
-	})
-	facebookId?: string;
-}
-
-export class PgUserAccountRepository implements LoadUserAccountRepository {
-	public async load(
-		input: LoadUserAccountRepository.Input,
-	): Promise<LoadUserAccountRepository.Output> {
-		const pgUserRepository: Repository<PgUser> = getRepository(PgUser);
-
-		const pgUser = await pgUserRepository.findOne({
-			where: {
-				email: input.email,
-			},
-		});
-
-		if (pgUser != null) {
-			return {
-				id: pgUser.id.toString(),
-				name: pgUser.name ?? undefined,
-			};
-		}
-	}
-}
+	return db;
+};
 
 describe('PgUserAccountRepository', (): void => {
 	describe('load', (): void => {
@@ -62,13 +27,7 @@ describe('PgUserAccountRepository', (): void => {
 		let backup: IBackup;
 
 		beforeAll(async (): Promise<void> => {
-			const db: IMemoryDb = newDb();
-
-			const connection: any = await db.adapters.createTypeormConnection({
-				type: 'postgres',
-				entities: [PgUser],
-			});
-			await connection.synchronize();
+			const db: IMemoryDb = await createFakeDatabase([PgUser]);
 
 			backup = db.backup();
 
