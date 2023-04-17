@@ -2,8 +2,8 @@ import axios from 'axios';
 
 import { type HttpGetClient } from './client';
 
-export class AxiosHttpClient {
-	public async get({ params, url }: HttpGetClient.Input): Promise<any> {
+export class AxiosHttpClient implements HttpGetClient {
+	public async get<T = any>({ params, url }: HttpGetClient.Input): Promise<T> {
 		const result = await axios.get(url, {
 			params,
 		});
