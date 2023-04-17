@@ -1,9 +1,10 @@
 import {
-	badRequest,
-	unauthorized,
 	type HttpResponse,
+	badRequest,
+	serverError,
+	unauthorized,
 } from '@/application/helpers';
-import { RequiredFieldError, ServerHttpError } from '@/application/errors';
+import { RequiredFieldError } from '@/application/errors';
 
 import { type FacebookAuthentication } from '@/domain/features';
 import { AccessToken } from '@/domain/models';
@@ -34,10 +35,7 @@ export class FacebookLoginController {
 				return unauthorized();
 			}
 		} catch (error) {
-			return {
-				statusCode: 500,
-				data: new ServerHttpError(error as Error),
-			};
+			return serverError(error as Error);
 		}
 	}
 }
