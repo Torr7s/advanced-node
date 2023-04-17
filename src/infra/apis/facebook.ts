@@ -18,6 +18,9 @@ type UserInfo = {
 	email: string;
 };
 
+type LoadInput = LoadFacebookUserApi.Input;
+type LoadOutput = LoadFacebookUserApi.Output;
+
 export class FacebookAPI implements LoadFacebookUserApi {
 	private static readonly baseURL: string = 'https://graph.facebook.com';
 	private static readonly grantType: string = 'client_credentials';
@@ -28,9 +31,7 @@ export class FacebookAPI implements LoadFacebookUserApi {
 		private readonly clientSecret: string,
 	) {}
 
-	public async loadUser(
-		input: LoadFacebookUserApi.Input,
-	): Promise<LoadFacebookUserApi.Output> {
+	public async loadUser(input: LoadInput): Promise<LoadOutput> {
 		const userInfo = await this.getUserInfo(input.token);
 
 		return {
