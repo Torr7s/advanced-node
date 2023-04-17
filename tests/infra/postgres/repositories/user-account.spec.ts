@@ -7,31 +7,31 @@ import { PgUser } from '@/infra/postgres/entities';
 import { PgUserAccountRepository } from '@/infra/postgres/repositories';
 
 describe('PgUserAccountRepository', (): void => {
+	let sut: PgUserAccountRepository;
+	let pgUserRepository: Repository<PgUser>;
+
+	let backup: IBackup;
+
+	beforeAll(async (): Promise<void> => {
+		const db: IMemoryDb = await createFakeDatabase([PgUser]);
+
+		backup = db.backup();
+
+		pgUserRepository = getRepository(PgUser);
+	});
+
+	afterAll(async (): Promise<void> => {
+		await getConnection().close();
+	});
+
+	beforeEach((): void => {
+		backup.restore();
+
+		sut = new PgUserAccountRepository();
+	});
+
 	describe('load', (): void => {
 		const email = 'email@example.com';
-
-		let sut: PgUserAccountRepository;
-		let pgUserRepository: Repository<PgUser>;
-
-		let backup: IBackup;
-
-		beforeAll(async (): Promise<void> => {
-			const db: IMemoryDb = await createFakeDatabase([PgUser]);
-
-			backup = db.backup();
-
-			pgUserRepository = getRepository(PgUser);
-		});
-
-		afterAll(async (): Promise<void> => {
-			await getConnection().close();
-		});
-
-		beforeEach((): void => {
-			backup.restore();
-
-			sut = new PgUserAccountRepository();
-		});
 
 		it('should return an account if email exists', async (): Promise<void> => {
 			await pgUserRepository.save({ email });
