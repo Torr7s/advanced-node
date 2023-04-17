@@ -11,5 +11,15 @@ export class ServerHttpError extends Error {
 export class RequiredFieldError extends Error {
 	constructor(fieldName: string) {
 		super(`The field ${fieldName} is required`);
+
+		this.name = this.constructor.name;
+	}
+}
+
+export class UnauthorizedError extends Error {
+	constructor() {
+		super('Unauthorized');
+
+		this.name = this.constructor.name;
 	}
 }
