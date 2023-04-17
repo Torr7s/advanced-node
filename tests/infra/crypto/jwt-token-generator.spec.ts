@@ -10,7 +10,7 @@ export class JwtTokenGenerator {
 	public async generateToken(
 		input: TokenGenerator.Input,
 	): Promise<TokenGenerator.Output> {
-		const expirationInSeconds = input.expirationInMs / 1_000;
+		const expirationInSeconds: number = input.expirationInMs / 1_000;
 
 		return jwt.sign(
 			{
@@ -30,7 +30,7 @@ describe('JwtTokenGenerator', (): void => {
 
 	beforeAll((): void => {
 		mockedJwt = jwt as jest.Mocked<typeof jwt>;
-		mockedJwt.sign.mockImplementation(() => 'any_token');
+		mockedJwt.sign.mockImplementation((): string => 'any_token');
 	});
 
 	beforeEach((): void => {
@@ -53,11 +53,24 @@ describe('JwtTokenGenerator', (): void => {
 	});
 
 	it('should return a token on success', async (): Promise<void> => {
-		const token = await sut.generateToken({
+		const token: string = await sut.generateToken({
 			key: 'any_key',
 			expirationInMs: 1_000_000,
 		});
 
 		expect(token).toBe('any_token');
+	});
+
+	it('should rethrow if jwt.sign throws', async (): Promise<void> => {
+		mockedJwt.sign.mockImplementationOnce((): never => {
+			throw new Error('token_error');
+		});
+
+		const promise = sut.generateToken({
+			key: 'any_key',
+			expirationInMs: 1_000_000,
+		});
+
+		await expect(promise).rejects.toThrow(new Error('token_error'));
 	});
 });
