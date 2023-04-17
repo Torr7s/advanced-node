@@ -7,13 +7,16 @@ import {
 	type LoadUserAccountRepository,
 } from '@/data/contracts/repositories';
 
-export class PgUserAccountRepository implements LoadUserAccountRepository {
-	public async load(
-		input: LoadUserAccountRepository.Input,
-	): Promise<LoadUserAccountRepository.Output> {
-		const pgUserRepository: Repository<PgUser> = getRepository(PgUser);
+type LoadInput = LoadUserAccountRepository.Input;
+type LoadOutput = LoadUserAccountRepository.Output;
 
-		const pgUser = await pgUserRepository.findOne({
+type SaveInput = SaveFacebookAccountRepository.Input;
+
+export class PgUserAccountRepository implements LoadUserAccountRepository {
+	private readonly repository: Repository<PgUser> = getRepository(PgUser);
+
+	public async load(input: LoadInput): Promise<LoadOutput> {
+		const pgUser = await this.repository.findOne({
 			where: {
 				email: input.email,
 			},
@@ -27,19 +30,15 @@ export class PgUserAccountRepository implements LoadUserAccountRepository {
 		}
 	}
 
-	public async saveWithFacebook(
-		input: SaveFacebookAccountRepository.Input,
-	): Promise<void> {
-		const pgUserRepository: Repository<PgUser> = getRepository(PgUser);
-
+	public async saveWithFacebook(input: SaveInput): Promise<void> {
 		if (input.id === undefined) {
-			await pgUserRepository.save({
+			await this.repository.save({
 				facebookId: input.facebookId,
 				name: input.name,
 				email: input.email,
 			});
 		} else {
-			await pgUserRepository.update(
+			await this.repository.update(
 				{
 					id: parseInt(input.id),
 				},
