@@ -11,6 +11,7 @@ type LoadInput = LoadUserAccountRepository.Input;
 type LoadOutput = LoadUserAccountRepository.Output;
 
 type SaveInput = SaveFacebookAccountRepository.Input;
+type SaveOutput = SaveFacebookAccountRepository.Output;
 
 export class PgUserAccountRepository implements LoadUserAccountRepository {
 	private readonly repository: Repository<PgUser> = getRepository(PgUser);
@@ -30,14 +31,20 @@ export class PgUserAccountRepository implements LoadUserAccountRepository {
 		}
 	}
 
-	public async saveWithFacebook(input: SaveInput): Promise<void> {
+	public async saveWithFacebook(input: SaveInput): Promise<SaveOutput> {
+		let id: string;
+
 		if (input.id === undefined) {
-			await this.repository.save({
+			const pgUser = await this.repository.save({
 				facebookId: input.facebookId,
 				name: input.name,
 				email: input.email,
 			});
+
+			id = pgUser.id.toString();
 		} else {
+			id = input.id;
+
 			await this.repository.update(
 				{
 					id: parseInt(input.id),
@@ -48,5 +55,9 @@ export class PgUserAccountRepository implements LoadUserAccountRepository {
 				},
 			);
 		}
+
+		return {
+			id,
+		};
 	}
 }

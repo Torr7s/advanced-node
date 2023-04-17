@@ -52,7 +52,7 @@ describe('PgUserAccountRepository', (): void => {
 
 	describe('saveWithFacebook', (): void => {
 		it('should create an account if id is undefined', async (): Promise<void> => {
-			await sut.saveWithFacebook({
+			const { id } = await sut.saveWithFacebook({
 				facebookId: 'any_facebook_id',
 				name: 'any_name',
 				email: 'any_email',
@@ -65,6 +65,7 @@ describe('PgUserAccountRepository', (): void => {
 			});
 
 			expect(pgUser?.id).toBe(1);
+			expect(id).toBe('1');
 		});
 
 		it('should update an account if id is defined', async (): Promise<void> => {
@@ -74,7 +75,7 @@ describe('PgUserAccountRepository', (): void => {
 				email: 'any_email',
 			});
 
-			await sut.saveWithFacebook({
+			const { id } = await sut.saveWithFacebook({
 				id: '1',
 				facebookId: 'new_facebook_id',
 				name: 'new_name',
@@ -93,6 +94,7 @@ describe('PgUserAccountRepository', (): void => {
 				name: 'new_name',
 				email: 'any_email',
 			});
+			expect(id).toBe('1');
 		});
 	});
 });
