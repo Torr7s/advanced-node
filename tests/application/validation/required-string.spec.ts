@@ -7,7 +7,9 @@ export class RequiredStringValidator {
 	) {}
 
 	public validate(): Error | undefined {
-		return new RequiredFieldError(this.fieldName);
+		if (!this.value) {
+			return new RequiredFieldError(this.fieldName);
+		}
 	}
 }
 
@@ -34,5 +36,13 @@ describe('RequiredStringValidator', (): void => {
 		const error = sut.validate();
 
 		expect(error).toEqual(new RequiredFieldError('any_field'));
+	});
+
+	it('should return undefined if value is not empty', (): void => {
+		const sut = new RequiredStringValidator('any_field', 'any_value');
+
+		const error = sut.validate();
+
+		expect(error).toBeUndefined();
 	});
 });
