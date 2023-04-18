@@ -11,7 +11,7 @@ import { type FacebookAuthentication } from '@/domain/features';
 import { AccessToken } from '@/domain/models';
 
 type HttpRequest = {
-	token?: string | null;
+	token: string;
 };
 
 type Model =
@@ -27,8 +27,10 @@ export class FacebookLoginController {
 
 	public async handle(httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
 		try {
-			if (!httpRequest.token) {
-				return badRequest(new RequiredFieldError('token'));
+			const error = this.validate(httpRequest);
+
+			if (error) {
+				return badRequest(error);
 			}
 
 			const accessToken = await this.facebookAuthentication.exec({
@@ -44,6 +46,12 @@ export class FacebookLoginController {
 			}
 		} catch (error) {
 			return serverError(error as Error);
+		}
+	}
+
+	private validate(httpRequest: HttpRequest): Error | undefined {
+		if (!httpRequest.token) {
+			return new RequiredFieldError('token');
 		}
 	}
 }
