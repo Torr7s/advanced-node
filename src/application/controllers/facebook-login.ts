@@ -1,14 +1,10 @@
-import {
-	type HttpResponse,
-	badRequest,
-	ok,
-	serverError,
-	unauthorized,
-} from '@/application/helpers';
+import { Controller } from '@/application/controllers';
+
+import { type HttpResponse, ok, unauthorized } from '@/application/helpers';
 
 import {
-	ValidationBuilder,
-	ValidationComposite,
+	ValidationBuilder as VBuilder,
+	type Validator,
 } from '@/application/validation';
 
 import { type FacebookAuthentication } from '@/domain/features';
@@ -24,40 +20,26 @@ type Model =
 			accessToken: string;
 	  };
 
-export class FacebookLoginController {
-	constructor(
-		private readonly facebookAuthentication: FacebookAuthentication,
-	) {}
-
-	public async handle(httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
-		try {
-			const error = this.validate(httpRequest);
-
-			if (error) {
-				return badRequest(error);
-			}
-
-			const accessToken = await this.facebookAuthentication.exec({
-				token: httpRequest.token,
-			});
-
-			if (accessToken instanceof AccessToken) {
-				return ok({
-					accessToken: accessToken.value,
-				});
-			} else {
-				return unauthorized();
-			}
-		} catch (error) {
-			return serverError(error as Error);
-		}
+export class FacebookLoginController extends Controller {
+	constructor(private readonly facebookAuthentication: FacebookAuthentication) {
+		super();
 	}
 
-	private validate(httpRequest: HttpRequest): Error | undefined {
-		return new ValidationComposite([
-			...ValidationBuilder.of({ fieldName: 'token', value: httpRequest.token })
+	public async perform(httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
+		const accessToken = await this.facebookAuthentication.exec({
+			token: httpRequest.token,
+		});
+
+		return accessToken instanceof AccessToken
+			? ok({ accessToken: accessToken.value })
+			: unauthorized();
+	}
+
+	public override buildValidators(httpRequest: HttpRequest): Validator[] {
+		return [
+			...VBuilder.of({ fieldName: 'token', value: httpRequest.token })
 				.required()
 				.build(),
-		]).validate();
+		];
 	}
 }
