@@ -7,7 +7,7 @@ import {
 } from '@/application/helpers';
 
 import {
-	RequiredStringValidator,
+	ValidationBuilder,
 	ValidationComposite,
 } from '@/application/validation';
 
@@ -54,10 +54,10 @@ export class FacebookLoginController {
 	}
 
 	private validate(httpRequest: HttpRequest): Error | undefined {
-		const validator = new ValidationComposite([
-			new RequiredStringValidator('token', httpRequest.token),
-		]);
-
-		return validator.validate();
+		return new ValidationComposite([
+			...ValidationBuilder.of({ fieldName: 'token', value: httpRequest.token })
+				.required()
+				.build(),
+		]).validate();
 	}
 }
