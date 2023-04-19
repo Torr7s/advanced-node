@@ -13,17 +13,27 @@ export class ValidationComposite {
 }
 
 describe('ValidationComposite', (): void => {
-	it('should return undefined if all Validators return undefined', (): void => {
-		const validator1: MockProxy<Validator> = mock();
-		const validator2: MockProxy<Validator> = mock();
+	let sut: ValidationComposite;
+
+	let validator1: MockProxy<Validator>;
+	let validator2: MockProxy<Validator>;
+	let validators: Validator[] = [];
+
+	beforeAll((): void => {
+		validator1 = mock();
+		validator2 = mock();
 
 		validator1.validate.mockReturnValue(undefined);
 		validator2.validate.mockReturnValue(undefined);
 
-		const validators: Validator[] = [validator1, validator2];
+		validators = [validator1, validator2];
+	});
 
-		const sut = new ValidationComposite(validators);
+	beforeEach((): void => {
+		sut = new ValidationComposite(validators);
+	});
 
+	it('should return undefined if all Validators return undefined', (): void => {
 		const error = sut.validate();
 
 		expect(error).toBeUndefined();
