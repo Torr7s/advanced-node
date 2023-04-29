@@ -3,6 +3,9 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "plugins": [
+    "eslint-plugin-import-helpers"
+  ],
   "rules": {
     "getter-return": "error",
     "no-async-promise-executor": "error",
@@ -19,6 +22,27 @@
         "anonymous": "never",
         "named": "always",
         "asyncArrow": "always"
+      }
+    ],
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "groups": [
+          "/^node/",
+          "module",
+          "/^(.|..)\//",
+          "/^@app/",
+          "/^@domain/",
+          "/^@infra/",
+          "/^@main/",
+          "/^@tests/",
+          ["sibling"]
+        ],
+        "alphabetize": {
+          "order": "asc",
+          "ignoreCase": false
+        }
       }
     ],
     "accessor-pairs": [
