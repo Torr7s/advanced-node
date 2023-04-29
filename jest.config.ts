@@ -1,6 +1,6 @@
 import { type Config } from 'jest';
 
-const config: Config = {
+const jestConfig: Config = {
 	roots: ['<rootDir>/src', '<rootDir>/tests'],
 	moduleFileExtensions: ['js', 'json', 'ts'],
 	testRegex: '.*\\.spec\\.ts$',
@@ -20,4 +20,5 @@ const config: Config = {
 	},
 	clearMocks: true,
 };
-export default config;
+
+export default jestConfig;

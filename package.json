@@ -17,6 +17,7 @@
     "test:cov": "npm test -- --coverage",
     "test:staged": "npm test -- --findRelatedTests",
     "test:watch": "npm test -- --watch",
+    "test:fb-api": "npm test -- -c ./jest.integration.config.ts tests/external/facebook-api.test.ts",
     "prepare": "husky install"
   },
   "dependencies": {
