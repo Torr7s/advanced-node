@@ -15,8 +15,12 @@ const jestConfig: Config = {
 	coverageDirectory: '../coverage',
 	testEnvironment: 'node',
 	moduleNameMapper: {
-		'@/tests/(.+)': '<rootDir>/tests/$1',
-		'@/(.+)': '<rootDir>/src/$1',
+		'@tests/(.+)': '<rootDir>/tests/$1',
+		'@app/(.+)': '<rootDir>/src/application/$1',
+		'@data/(.+)': '<rootDir>/src/data/$1',
+		'@domain/(.+)': '<rootDir>/src/domain/$1',
+		'@infra/(.+)': '<rootDir>/src/infra/$1',
+		'@main/(.+)': '<rootDir>/src/main/$1',
 	},
 	clearMocks: true,
 };

@@ -28,7 +28,7 @@
       "@main/*": [
         "main/*"
       ],
-      "@/tests/*": ["../tests/*"],
+      "@tests/*": ["../tests/*"],
     },
     "rootDirs": [
       "src",
