@@ -13,8 +13,20 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "paths": {
-      "@/*": [
-        "*"
+      "@app/*": [
+        "application/*"
+      ],
+      "@data/*": [
+        "data/*"
+      ],
+      "@domain/*": [
+        "domain/*"
+      ],
+      "@infra/*": [
+        "infra/*"
+      ],
+      "@main/*": [
+        "main/*"
       ],
       "@/tests/*": ["../tests/*"],
     },
