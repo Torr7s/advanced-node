@@ -12,7 +12,7 @@
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "lint": "eslint \"{src,tests}/**/*.ts\" --fix",
     "format": "prettier --write \"{src,tests}/**/*.ts\"",
-    "start": "node dist/main/api",
+    "start": "node dist/infra/http/server.js",
     "test": "dotenv -e .env.local -- jest --passWithNoTests --no-cache --runInBand",
     "test:cov": "npm test -- --coverage",
     "test:staged": "npm test -- --findRelatedTests",
