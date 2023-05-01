@@ -1,9 +1,9 @@
-import { Controller } from '@/application/controllers';
-import { ServerHttpError } from '@/application/errors';
-import { type HttpResponse } from '@/application/helpers';
-import { ValidationComposite } from '@/application/validation';
+import { Controller } from '@app/controllers';
+import { ServerHttpError } from '@app/errors';
+import { type HttpResponse } from '@app/helpers';
+import { ValidationComposite } from '@app/validation';
 
-jest.mock('@/application/validation/composite');
+jest.mock('@app/validation/composite');
 
 class ControllerStub extends Controller {
 	public result: HttpResponse = {

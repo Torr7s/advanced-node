@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { type TokenGenerator } from '@/data/contracts/crypto';
+import { type TokenGenerator } from '@data/contracts/crypto';
 
 type TokenInput = TokenGenerator.Input;
 type TokenOutput = TokenGenerator.Output;

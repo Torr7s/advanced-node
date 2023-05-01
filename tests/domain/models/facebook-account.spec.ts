@@ -1,4 +1,4 @@
-import { FacebookAccount } from '@/domain/models';
+import { FacebookAccount } from '@domain/models';
 
 describe('FacebookAccount Model', (): void => {
 	const facebookData = {

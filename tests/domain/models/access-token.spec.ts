@@ -1,4 +1,4 @@
-import { AccessToken } from '@/domain/models';
+import { AccessToken } from '@domain/models';
 
 describe('AccessToken Model', (): void => {
 	it('should create with a value', (): void => {

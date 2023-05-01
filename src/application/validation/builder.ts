@@ -1,7 +1,4 @@
-import {
-	RequiredStringValidator,
-	type Validator,
-} from '@/application/validation';
+import { RequiredStringValidator, type Validator } from '@app/validation';
 
 export class ValidationBuilder {
 	private constructor(

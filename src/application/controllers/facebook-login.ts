@@ -1,14 +1,9 @@
-import { Controller } from '@/application/controllers';
+import { Controller } from '@app/controllers';
+import { type HttpResponse, ok, unauthorized } from '@app/helpers';
+import { ValidationBuilder as VBuilder, type Validator } from '@app/validation';
 
-import { type HttpResponse, ok, unauthorized } from '@/application/helpers';
-
-import {
-	ValidationBuilder as VBuilder,
-	type Validator,
-} from '@/application/validation';
-
-import { type FacebookAuthentication } from '@/domain/features';
-import { AccessToken } from '@/domain/models';
+import { type FacebookAuthentication } from '@domain/features';
+import { AccessToken } from '@domain/models';
 
 type HttpRequest = {
 	token: string;
@@ -31,13 +26,18 @@ export class FacebookLoginController extends Controller {
 		});
 
 		return accessToken instanceof AccessToken
-			? ok({ accessToken: accessToken.value })
+			? ok({
+					accessToken: accessToken.value,
+			  })
 			: unauthorized();
 	}
 
 	public override buildValidators(httpRequest: HttpRequest): Validator[] {
 		return [
-			...VBuilder.of({ fieldName: 'token', value: httpRequest.token })
+			...VBuilder.of({
+				fieldName: 'token',
+				value: httpRequest.token,
+			})
 				.required()
 				.build(),
 		];

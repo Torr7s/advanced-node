@@ -5,7 +5,7 @@ import { PgUser } from '../entities';
 import {
 	type SaveFacebookAccountRepository,
 	type LoadUserAccountRepository,
-} from '@/data/contracts/repositories';
+} from '@data/contracts/repositories';
 
 type LoadInput = LoadUserAccountRepository.Input;
 type LoadOutput = LoadUserAccountRepository.Output;

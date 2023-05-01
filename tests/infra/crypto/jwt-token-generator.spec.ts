@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { JwtTokenGenerator } from '@/infra/crypto';
+import { JwtTokenGenerator } from '@infra/crypto';
 
 jest.mock('jsonwebtoken');
 
@@ -24,7 +24,9 @@ describe('JwtTokenGenerator', (): void => {
 		});
 
 		expect(mockedJwt.sign).toHaveBeenCalledWith(
-			{ key: 'any_key' },
+			{
+				key: 'any_key',
+			},
 			'any_secret_key',
 			{
 				expiresIn: 1_000,

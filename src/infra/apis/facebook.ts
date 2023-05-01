@@ -1,6 +1,6 @@
-import { type HttpGetClient } from '@/infra/http';
+import { type LoadFacebookUserApi } from '@data/contracts/apis';
 
-import { type LoadFacebookUserApi } from '@/data/contracts/apis';
+import { type HttpGetClient } from '@infra/http';
 
 type AppToken = {
 	access_token: string;

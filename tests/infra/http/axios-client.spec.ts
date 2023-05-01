@@ -1,6 +1,6 @@
 import axios, { type AxiosStatic } from 'axios';
 
-import { AxiosHttpClient } from '@/infra/http';
+import { AxiosHttpClient } from '@infra/http';
 
 jest.mock('axios');
 
@@ -31,7 +31,10 @@ describe('AxiosHttpClient', (): void => {
 
 	describe('X GET', (): void => {
 		it('should call get with correct input', async (): Promise<void> => {
-			await sut.get({ url, params });
+			await sut.get({
+				url,
+				params,
+			});
 
 			expect(mockedAxios.get).toHaveBeenCalledWith(url, {
 				params,

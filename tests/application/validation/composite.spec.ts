@@ -1,6 +1,6 @@
 import { type MockProxy, mock } from 'jest-mock-extended';
 
-import { type Validator, ValidationComposite } from '@/application/validation';
+import { type Validator, ValidationComposite } from '@app/validation';
 
 describe('ValidationComposite', (): void => {
 	let sut: ValidationComposite;

@@ -3,8 +3,8 @@ import { type Repository, getConnection, getRepository } from 'typeorm';
 
 import { createFakeDatabase } from '../mocks';
 
-import { PgUser } from '@/infra/postgres/entities';
-import { PgUserAccountRepository } from '@/infra/postgres/repositories';
+import { PgUser } from '@infra/postgres/entities';
+import { PgUserAccountRepository } from '@infra/postgres/repositories';
 
 describe('PgUserAccountRepository', (): void => {
 	let sut: PgUserAccountRepository;
@@ -34,9 +34,13 @@ describe('PgUserAccountRepository', (): void => {
 		const email = 'email@example.com';
 
 		it('should return an account if email exists', async (): Promise<void> => {
-			await pgUserRepository.save({ email });
+			await pgUserRepository.save({
+				email,
+			});
 
-			const account = await sut.load({ email });
+			const account = await sut.load({
+				email,
+			});
 
 			expect(account).toEqual({
 				id: '1',
@@ -44,7 +48,9 @@ describe('PgUserAccountRepository', (): void => {
 		});
 
 		it('should return undefined if email does not exists', async (): Promise<void> => {
-			const account = await sut.load({ email });
+			const account = await sut.load({
+				email,
+			});
 
 			expect(account).toBeUndefined();
 		});
