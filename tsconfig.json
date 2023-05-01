@@ -41,6 +41,8 @@
   "include": [
     "src",
     "tests",
+  ],
+  "exclude": [
     "jest*.config.ts"
   ]
 }
