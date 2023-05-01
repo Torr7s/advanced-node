@@ -1,7 +1,7 @@
 import { type MockProxy, mock } from 'jest-mock-extended';
 
 import { FacebookAPI } from '@infra/apis';
-import { type HttpGetClient } from '@infra/http';
+import { type HttpGetClient } from '@infra/http/client';
 
 describe('Facebook API', (): void => {
 	let clientId: string;

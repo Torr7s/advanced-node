@@ -1,6 +1,6 @@
 import axios, { type AxiosStatic } from 'axios';
 
-import { AxiosHttpClient } from '@infra/http';
+import { AxiosHttpClient } from '@infra/http/client';
 
 jest.mock('axios');
 
