@@ -12,4 +12,7 @@ export const env = {
 			userEmail: process.env.FACEBOOK_USER_TEST_EMAIL as string,
 		},
 	},
+	jwt: {
+		secretKey: (process.env.JWT_SECRET_KEY as string) ?? 'jwt_secret_key',
+	},
 };
